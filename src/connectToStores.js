@@ -51,7 +51,7 @@ import { assign, isFunction } from './functions'
 
 function connectToStores(Spec, Component = Spec) {
   // Check for required static methods.
-  if (!isFunction(Spec.getStores)) {
+  if (!isFunction(Spec.getStores) && Spec.getStores) {
     throw new Error('connectToStores() expects the wrapped component to have a static getStores() method')
   }
   if (!isFunction(Spec.getPropsFromStores)) {
@@ -66,7 +66,8 @@ function connectToStores(Spec, Component = Spec) {
     var storeDidChange = Spec.storeDidChange
   }
 
-  class StoreConnection extends React.Component {
+  // inherit static properties and methods
+  class StoreConnection extends Component {
     constructor(props, context) {
       super(props, context)
       this.state = Spec.getPropsFromStores(props, context)
